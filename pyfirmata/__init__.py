@@ -60,14 +60,14 @@ class ArduinoNano(Board):
     def __str__(self):
         return "Arduino Nano {0.name} on {0.sp.port}".format(self)
 
-class ArduinoLeonardo(Board):
+class ArduinoLeonardoLattePanda(Board):
     """
-    A board that will set itself up as an Arduino Leonardo.
+    A board that will set itself up as an Latte Panda Arduino Leonardo.
     """
     def __init__(self, *args, **kwargs):
         args = list(args)
-        args.append(BOARDS['arduino_leonardo'])
-        super(ArduinoLeonardo, self).__init__(*args, **kwargs)
+        args.append(BOARDS['arduino_leonardo_lattepanda'])
+        super(ArduinoLeonardoLattePanda, self).__init__(*args, **kwargs)
 
     def __str__(self):
-        return "Arduino Leonardo {0.name} on {0.sp.port}".format(self)
+        return "Arduino Leonardo LattePanda {0.name} on {0.sp.port}".format(self)
