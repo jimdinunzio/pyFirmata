@@ -90,6 +90,8 @@ ANALOG = 2         # analog pin in analogInput mode
 PWM = 3            # digital pin in PWM output mode
 SERVO = 4          # digital pin in SERVO mode
 SERIAL = 10        # digital pin for serial communication
+PULLUP = 11        # enable internal pull-up resistor for pin
+
 
 # Pin types
 DIGITAL = OUTPUT   # same as OUTPUT below
@@ -278,6 +280,8 @@ class Board(object):
                 pin.mode = PWM
             elif bits[2] == 's':
                 pin.mode = SERVO
+            elif bits[2] == 'ipu':
+                pin.mode = PULLUP
             elif bits[2] != 'o':
                 pin.mode = INPUT
         else:
@@ -582,7 +586,7 @@ class Port(object):
         self.board.sp.write(msg)
 
         for pin in self.pins:
-            if pin.mode == INPUT:
+            if pin.mode == INPUT or pin.mode == PULLUP:
                 pin.reporting = True  # TODO Shouldn't this happen at the pin?
 
     def disable_reporting(self):
@@ -606,10 +610,10 @@ class Port(object):
         self.board.sp.write(msg)
 
     def _update(self, mask):
-        """Update the values for the pins marked as input with the mask."""
+        """Update the values for the pins marked as input or pullup with the mask."""
         if self.reporting:
             for pin in self.pins:
-                if pin.mode is INPUT:
+                if pin.mode is INPUT or pin.mode is PULLUP:
                     pin_nr = pin.pin_number - self.port_number * 8
                     pin.value = (mask & (1 << pin_nr)) > 0
 
@@ -650,7 +654,7 @@ class Pin(object):
         # Set mode with SET_PIN_MODE message
         self._mode = mode
         self.board.sp.write(bytearray([SET_PIN_MODE, self.pin_number, mode]))
-        if mode == INPUT:
+        if mode == INPUT or mode == PULLUP:
             self.enable_reporting()
 
     def _get_mode(self):
@@ -664,7 +668,7 @@ class Pin(object):
 
     def enable_reporting(self):
         """Set an input pin to report values."""
-        if self.mode is not INPUT:
+        if self.mode is not INPUT and self.mode is not PULLUP:
             raise IOError("{0} is not an input and can therefore not report".format(self))
         if self.type == ANALOG:
             self.reporting = True
@@ -705,7 +709,7 @@ class Pin(object):
         """
         if self.mode is UNAVAILABLE:
             raise IOError("{0} can not be used through Firmata".format(self))
-        if self.mode is INPUT:
+        if self.mode is INPUT or self.mode is PULLUP:
             raise IOError("{0} is set up as an INPUT and can therefore not be written to"
                           .format(self))
         if value is not self.value:
