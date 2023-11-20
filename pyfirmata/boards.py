@@ -31,7 +31,7 @@ BOARDS = {
         'use_ports': True,
         'disabled': (0, 1)  # Rx, Tx, Crystal
     },
-    'arduino_leonardo_latte_panda': {
+    'arduino_leonardo_lattepanda': {
         'digital': tuple(x for x in range(23)),
         'analog': tuple(x for x in range(11)),
         'pwm': (3, 5, 6, 9, 10, 11, 13),

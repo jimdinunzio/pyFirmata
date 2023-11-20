@@ -252,7 +252,7 @@ def ping_time_to_distance(time, calibration=None, distance_units='cm'):
     if not time: 
         return 0
     if not calibration: # Standard calculation using speed of sound.
-        # 1 (second) / 340.29 (speed of sound in m/s) = 0.00293866995 metres
+        # 1 (second) / 340.29 (speed of sound in m/s) = 0.00293866995 seconds / meter or 29.38 us/cm
         # distance = duration (microseconds) / 29.38 / 2 (go and back)
         distance = time / 29.3866995 / 2
     else: # Linear interpolation between two calibration points.
