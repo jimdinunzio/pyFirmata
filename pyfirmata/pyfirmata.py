@@ -514,10 +514,12 @@ class Board(object):
         data = bytearray([SERIAL_LISTEN | portId])
         self.send_sysex(SERIAL_DATA, data)
 
-    def servo_config(self, pin, min_pulse=544, max_pulse=2400, angle=0):
+    def servo_config(self, pin, min_pulse=544, max_pulse=2400, angle=None):
         """
         Configure a pin as servo with min_pulse, max_pulse and first angle.
         ``min_pulse`` and ``max_pulse`` default to the arduino defaults.
+        With no ``angle`` nothing is written, so the caller's first write is
+        the first position the servo is sent.
         """
         if pin > len(self.digital) or self.digital[pin].mode == UNAVAILABLE:
             raise IOError("Pin {0} is not a valid servo pin".format(pin))
@@ -530,7 +532,8 @@ class Board(object):
         # set pin._mode to SERVO so that it sends analog messages
         # don't set pin.mode as that calls this method
         self.digital[pin]._mode = SERVO
-        self.digital[pin].write(angle)
+        if angle is not None:
+            self.digital[pin].write(angle)
 
     def reset(self):
         """Call this to do a system reset"""

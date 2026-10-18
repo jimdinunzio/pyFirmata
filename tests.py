@@ -308,7 +308,7 @@ class TestBoardMessages(BoardBaseTest):
     # 6  maxPulse MSB (7-13)
     # 7  END_SYSEX (0xF7)
     #
-    # then sets angle
+    # then sets angle, if one is given
     # 8  analog I/O message (0xE0)
     # 9  angle LSB
     # 10 angle MSB
@@ -317,7 +317,7 @@ class TestBoardMessages(BoardBaseTest):
         data = chain([0xF0, 0x70, 2],
                      to_two_bytes(544),
                      to_two_bytes(2400),
-                     [0xF7, 0xE0 + 2, 0, 0])
+                     [0xF7])
         self.assert_serial(*list(data))
 
     def test_servo_config_min_max_pulse(self):
@@ -325,7 +325,7 @@ class TestBoardMessages(BoardBaseTest):
         data = chain([0xF0, 0x70, 2],
                      to_two_bytes(600),
                      to_two_bytes(2000),
-                     [0xF7, 0xE0 + 2, 0, 0])
+                     [0xF7])
         self.assert_serial(*data)
 
     def test_servo_config_min_max_pulse_angle(self):
@@ -344,7 +344,7 @@ class TestBoardMessages(BoardBaseTest):
         data = chain([0xF0, 0x70, 2],
                      to_two_bytes(544),
                      to_two_bytes(2400),
-                     [0xF7, 0xE0 + 2, 0, 0])
+                     [0xF7])
         self.assert_serial(*data)
 
 
