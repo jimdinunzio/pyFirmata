@@ -542,7 +542,7 @@ class Board(object):
         if hasattr(self, 'digital'):
             for pin in self.digital:
                 if pin.mode == SERVO:
-                    pin.mode = OUTPUT
+                    pin.release_servo()
         if hasattr(self, 'sp'):
             self.sp.close()
 
@@ -717,6 +717,14 @@ class Pin(object):
         self.board.sp.write(bytearray([SET_PIN_MODE, self.pin_number, mode]))
         if mode == INPUT or mode == PULLUP:
             self.enable_reporting()
+
+    def release_servo(self):
+        """
+        Stop a servo's pulses and hold its signal line low. A floating
+        (INPUT) or high line on a powered servo makes it run to an end stop.
+        """
+        self.mode = OUTPUT
+        self.write(0)
 
     def _get_mode(self):
         return self._mode
